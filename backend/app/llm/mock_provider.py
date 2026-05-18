@@ -1,22 +1,51 @@
+import json
+
+
 class MockProvider:
     """
-    Fallback LLM provider used when OpenRouter is unavailable,
-    rate-limited, or during local demos.
+    Fallback provider used during development or when the real LLM is disabled.
+    It returns predictable responses so we can build and test the agent logic safely.
     """
 
     async def chat(self, messages: list):
-        last_user_message = ""
+        user_content = ""
 
         for message in reversed(messages):
             if message.get("role") == "user":
-                last_user_message = message.get("content", "")
+                user_content = message.get("content", "")
                 break
 
-        if "hello" in last_user_message.lower():
-            return "Hello! I am NUKHBA, your AI interview assistant."
+        lowered = user_content.lower()
 
-        return (
-            "This is a mock AI response from NUKHBA. "
-            "OpenRouter is currently unavailable or rate-limited, "
-            "so the system is using a safe fallback response."
-        )
+        if "generate 5 interview questions" in lowered:
+            return json.dumps({
+                "questions": [
+                    {
+                        "id": "Q1",
+                        "dimension": "D1 Technical Skills & Tools",
+                        "question": "Walk me through how you would write a SQL query to calculate monthly active users."
+                    },
+                    {
+                        "id": "Q2",
+                        "dimension": "D1 Technical Skills & Tools",
+                        "question": "Tell me about a time you cleaned a messy dataset. What steps did you take?"
+                    },
+                    {
+                        "id": "Q3",
+                        "dimension": "D2 Analytical & Statistical Thinking",
+                        "question": "If sales dropped by 15% last month, how would you investigate the cause?"
+                    },
+                    {
+                        "id": "Q4",
+                        "dimension": "D3 Business Acumen & Insight Communication",
+                        "question": "Explain a complex analysis you worked on to a non-technical stakeholder."
+                    },
+                    {
+                        "id": "Q5",
+                        "dimension": "D4 Experience & Project Ownership",
+                        "question": "Describe one data project you owned from start to finish."
+                    }
+                ]
+            })
+
+        return "Hello! I am NUKHBA, your AI interview assistant."
