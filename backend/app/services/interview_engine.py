@@ -55,7 +55,7 @@ class InterviewEngine:
 
         next_question = self.get_current_question()
 
-        if next_question is None:
+        if next_question is None and self.current_index >= len(self.questions):
             return {
                 "is_completed": True,
                 "message": "Interview completed.",
