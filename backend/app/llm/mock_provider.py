@@ -4,7 +4,6 @@ import json
 class MockProvider:
     """
     Fallback provider used during development or when the real LLM is disabled.
-    It returns predictable responses so we can build and test the agent logic safely.
     """
 
     async def chat(self, messages: list):
@@ -45,6 +44,48 @@ class MockProvider:
                         "dimension": "D4 Experience & Project Ownership",
                         "question": "Describe one data project you owned from start to finish."
                     }
+                ]
+            })
+
+        if "evaluate this data analyst candidate" in lowered:
+            return json.dumps({
+                "dimensions": {
+                    "D1": {
+                        "level": 4,
+                        "confidence": "High",
+                        "evidence": ["Candidate explained SQL joins and monthly active user calculation."]
+                    },
+                    "D2": {
+                        "level": 4,
+                        "confidence": "Medium",
+                        "evidence": ["Candidate mentioned segmentation and root cause analysis."]
+                    },
+                    "D3": {
+                        "level": 3,
+                        "confidence": "Medium",
+                        "evidence": ["Candidate explained insights but business impact was not deeply quantified."]
+                    },
+                    "D4": {
+                        "level": 3,
+                        "confidence": "Medium",
+                        "evidence": ["Candidate described project experience but ownership details are limited."]
+                    },
+                    "D5": {
+                        "level": 4,
+                        "confidence": "High",
+                        "evidence": ["Answers are clear, structured, and consistent."]
+                    }
+                },
+                "strengths": [
+                    "Good technical foundation in SQL and data analysis.",
+                    "Clear approach to investigating metric changes."
+                ],
+                "weaknesses": [
+                    "Business impact storytelling could be stronger.",
+                    "Project ownership details need more evidence."
+                ],
+                "risks": [
+                    "Some dimensions have medium confidence due to limited interview depth."
                 ]
             })
 
